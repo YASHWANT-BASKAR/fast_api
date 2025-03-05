@@ -7,7 +7,7 @@ from typing import List
 
 app = FastAPI()
 
-# ✅ Enable CORS to allow WebSocket connections
+# ✅ Enable CORS for WebSocket support
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,7 +19,7 @@ app.add_middleware(
 # Store connected WebSocket clients
 clients: List[WebSocket] = []
 
-@app.websocket("/ws")  # ✅ Ensure the route is correctly defined
+@app.websocket("/ws")  # ✅ Ensure WebSocket route is defined
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     clients.append(websocket)
@@ -36,9 +36,8 @@ async def websocket_endpoint(websocket: WebSocket):
 
 # ✅ Ensure Render uses the correct PORT
 if __name__ == "__main__":
-    port = os.getenv("PORT", "10000")  # Default to 10000 if not set
-    port = int(port)
+    port = int(os.getenv("PORT", "10000"))  # Default to 10000 if not set
     print(f"🚀 Starting WebSocket server on port {port}")
 
-    # ✅ Explicitly set `ws` and `wss` protocols
-    uvicorn.run("server:app", host="0.0.0.0", port=port, ws="websockets")
+    # ✅ Explicitly set ASGI application for Daphne
+    uvicorn.run("server:app", host="0.0.0.0", port=port)
