@@ -27,11 +27,13 @@ async def websocket_endpoint(websocket: WebSocket):
 if __name__ == "__main__":
     port = os.getenv("PORT")  # Get PORT from Render
 
-    # 🚨 Debugging step: Print PORT variable to logs
+    # 🚨 Debugging: Print the PORT variable to logs
     if port is None:
         print("🚨 ERROR: PORT environment variable is not set!")
         raise ValueError("PORT environment variable is missing!")
 
     port = int(port)  # Convert to integer
     print(f"🚀 Starting server on port {port}")
-    uvicorn.run(app, host="0.0.0.0", port=port)
+
+    # ✅ Explicitly force Uvicorn to use the correct PORT
+    uvicorn.run("server:app", host="0.0.0.0", port=port, reload=False)
