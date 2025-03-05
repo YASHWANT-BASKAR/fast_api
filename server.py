@@ -20,3 +20,11 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"Connection closed: {e}")
     finally:
         clients.remove(websocket)
+        
+import os
+import uvicorn
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))  # Use Render's provided PORT
+    uvicorn.run(app, host="0.0.0.0", port=port)
+
