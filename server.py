@@ -23,8 +23,8 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         clients.remove(websocket)
 
-# 🔹 Ensure Render's assigned port is always used
+# ✅ Use Render's dynamically assigned PORT instead of hardcoded 10000
 if __name__ == "__main__":
-    port = int(os.environ["PORT"])  # Ensure we ONLY use Render's assigned port
+    port = int(os.environ["PORT"])  # Ensure we ONLY use Render's assigned PORT
     print(f"Starting server on port {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
