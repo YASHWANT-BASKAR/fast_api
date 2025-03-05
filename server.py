@@ -23,8 +23,12 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         clients.remove(websocket)
 
-# ✅ Use Render's dynamically assigned PORT
+# ✅ Ensure only Render's assigned PORT is used
 if __name__ == "__main__":
-    port = int(os.environ["PORT"])  # Ensure we ONLY use Render's assigned PORT
-    print(f"Starting server on port {port}")
+    port = os.getenv("PORT")  # Get PORT from Render
+    if port is None:
+        raise ValueError("PORT environment variable is not set!")  # Debugging step
+
+    port = int(port)  # Convert to integer
+    print(f"🚀 Starting server on port {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
