@@ -1,14 +1,24 @@
 import os
 import uvicorn
 from fastapi import FastAPI, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
 app = FastAPI()
 
+# ✅ Enable CORS (Optional, but recommended for frontend clients)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Store connected WebSocket clients
 clients: List[WebSocket] = []
 
-@app.websocket("/ws")
+@app.websocket("/ws")  # ✅ Ensure the route is "/ws"
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     clients.append(websocket)
@@ -23,17 +33,9 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         clients.remove(websocket)
 
-# ✅ Ensure Render's assigned PORT is being used correctly
+# ✅ Ensure Render uses the correct PORT
 if __name__ == "__main__":
-    port = os.getenv("PORT")  # Get PORT from Render
-
-    # 🚨 Debugging: Print the PORT variable to logs
-    if port is None:
-        print("🚨 ERROR: PORT environment variable is not set!")
-        raise ValueError("PORT environment variable is missing!")
-
-    port = int(port)  # Convert to integer
-    print(f"🚀 Starting server on port {port}")
-
-    # ✅ Explicitly force Uvicorn to use the correct PORT
-    uvicorn.run("server:app", host="0.0.0.0", port=port, reload=False)
+    port = os.getenv("PORT", "10000")  # Default to 10000 if not set
+    port = int(port)
+    print(f"🚀 Starting WebSocket server on port {port}")
+    uvicorn.run("server:app", host="0.0.0.0", port=port)
