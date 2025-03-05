@@ -23,11 +23,14 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         clients.remove(websocket)
 
-# ✅ Ensure only Render's assigned PORT is used
+# ✅ Ensure Render's assigned PORT is being used correctly
 if __name__ == "__main__":
     port = os.getenv("PORT")  # Get PORT from Render
+
+    # 🚨 Debugging step: Print PORT variable to logs
     if port is None:
-        raise ValueError("PORT environment variable is not set!")  # Debugging step
+        print("🚨 ERROR: PORT environment variable is not set!")
+        raise ValueError("PORT environment variable is missing!")
 
     port = int(port)  # Convert to integer
     print(f"🚀 Starting server on port {port}")
